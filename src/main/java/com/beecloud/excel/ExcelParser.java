@@ -75,7 +75,7 @@ public class ExcelParser {
      * 加载选择的sheet页
      */
     private void loadSheet(String sheetName) {
-    	sheet = workBook.getSheet(sheetName);     
+    		sheet = workBook.getSheet(sheetName); 
     }
         
     /**
@@ -139,6 +139,9 @@ public class ExcelParser {
      */
     public List<TestCase> transRowsToCase(String sheetName) throws Exception {
     	this.loadSheet(sheetName);
+    	if(sheet==null) {
+    		throw new Exception("No Sheet Found by Name:"+sheetName);
+    	}
     	List<TestCase> list = new ArrayList<TestCase>();
     	List<String> headers = this.getCloumnHeaders();
         for (int x = 1; x < sheet.getLastRowNum()+1; x++) {
@@ -184,7 +187,6 @@ public class ExcelParser {
             }
             list.add(testCase);
         }
-        System.out.println(list.toString());
         return list;
     }
     

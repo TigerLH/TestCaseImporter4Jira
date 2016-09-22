@@ -121,7 +121,7 @@ public class BeeCloudWindow extends JFrame implements ActionListener,ItemListene
 		this.setResizable(false);//设置窗体不能变化大小
 		this.setLocationRelativeTo(null);//设置窗体居中显示
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//点击窗口右上角的关闭按钮关闭窗口,退出程序
-		//this.startLogforward();
+		this.startLogforward();
 		try {
 			restClient = JiraRestClientFactory.CreateJiraRestClient();
 			logger.info("初始化完成");
@@ -165,18 +165,28 @@ public class BeeCloudWindow extends JFrame implements ActionListener,ItemListene
 				final String path = fileChooser.getSelectedFile().getAbsolutePath(); 
 				JTextArea_filePath_1.setText(path);
 				logger.info("selected file:"+path);
-				try {
-					ExcelParser ep = new ExcelParser(path);
-					List<TestCase> list = ep.transRowsToCase(projectName);
-					JiraUtil jiraUtil = new JiraUtil(restClient);
-					for(TestCase testCase:list){
-						logger.info("addIssue for priject:"+projectName);
-						logger.info(testCase.toString());
-						jiraUtil.AddIssue(projectName, testCase);
-					}
-				} catch (Exception e1) {
-					logger.error(e1.getMessage());
-				}
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						try {
+							ExcelParser ep = new ExcelParser(path);
+							List<TestCase> list = ep.transRowsToCase(projectName);
+							JiraUtil jiraUtil = new JiraUtil(restClient);
+							System.out.println("size:"+list.size());
+							if(list.size()>0){
+								logger.info("TestCase importer is starting...");
+								logger.info("addIssue for project:"+projectName);
+								for(TestCase testCase:list){
+									logger.info(testCase.toString());
+									jiraUtil.AddIssue(projectName, testCase);
+								}
+								logger.info("Import Completed");
+							}
+						} catch (Exception e1) {
+							logger.error(e1.toString());
+						}
+					}}).start();
 			}
 		}
 	}

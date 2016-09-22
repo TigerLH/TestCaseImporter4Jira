@@ -93,7 +93,6 @@ public class JiraUtil {
         IssueRestClient client = restClient.getIssueClient();
         BasicIssue issue = client.createIssue(input).claim();
         Issue actual = client.getIssue(issue.getKey()).claim();
-        System.out.println(actual);
         if(testCase.getSteps()!=null) {	    //允许测试步骤为空
         	addSteps(actual,testCase.getSteps());
         }
