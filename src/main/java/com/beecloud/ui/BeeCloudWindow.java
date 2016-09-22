@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +45,7 @@ import javax.swing.JComboBox;
  * @date 2016年9月9日 上午9:43:57
  * @version v1.0
  */
-public class BeeCloudWindow extends JFrame implements ActionListener,ItemListener{
+public class BeeCloudWindow extends JFrame implements ActionListener,ItemListener,KeyListener{
 	/**
 	 * 
 	 */
@@ -113,6 +115,7 @@ public class BeeCloudWindow extends JFrame implements ActionListener,ItemListene
 		JTextArea_filePath_1 = new JTextArea();
 		JTextArea_filePath_1.setEditable(false);//文件选择框设置为不可编辑
 		JTextArea_logtout_1 = new JTextArea();
+		JTextArea_logtout_1.addKeyListener(this);
 		JTextArea_logtout_1.setFont(new Font("微软雅黑", Font.PLAIN, 13));
 		JTextArea_logtout_1.setLineWrap(true);
 		JTextArea_logtout_1.setBorder(BorderFactory.createTitledBorder("日志输出"));
@@ -210,5 +213,33 @@ public class BeeCloudWindow extends JFrame implements ActionListener,ItemListene
 				 logger.info("The Project you selected is:"+comboBox.getSelectedItem());
 			 }			
 		}
+	}
+
+	/* （非 Javadoc）
+	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+	 */
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if (e.isControlDown() && e.VK_D == e.getKeyCode()){				//CTRL+D  清空
+			JTextArea_logtout_1.setText("");
+	        return;
+		}
+	}
+
+	/* （非 Javadoc）
+	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
+	 */
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		// TODO 自动生成的方法存根
+		
+	}
+
+	/* （非 Javadoc）
+	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
+	 */
+	@Override
+	public void keyTyped(KeyEvent e) {
+		
 	}
 }
