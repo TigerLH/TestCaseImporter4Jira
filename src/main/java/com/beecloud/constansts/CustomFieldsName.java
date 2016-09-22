@@ -1,4 +1,4 @@
-package com.beecloud.model;
+package com.beecloud.constansts;
 
 public enum CustomFieldsName {
 	TESTSTEP("测试详细信息"),

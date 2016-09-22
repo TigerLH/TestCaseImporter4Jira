@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.beecloud.api.JiraUtil;
 import com.beecloud.auth.JiraRestClientFactory;
-import com.beecloud.data.ExcelParser;
+import com.beecloud.excel.ExcelParser;
 import com.beecloud.log.LogOutStream;
 import com.beecloud.model.TestCase;
 
@@ -126,7 +126,7 @@ public class BeeCloudWindow extends JFrame implements ActionListener,ItemListene
 			restClient = JiraRestClientFactory.CreateJiraRestClient();
 			logger.info("初始化完成");
 		} catch (Exception e) {
-			logger.info("捕获异常");
+			logger.info("初始化失败");
 		}
 	}
 	
