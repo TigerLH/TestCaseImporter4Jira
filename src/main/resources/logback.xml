@@ -19,7 +19,7 @@
         <Target>System.out</Target>
         <encoder>
             <pattern>%5p %C.%M: %L - %m%n</pattern>
-            <charset>UTF-8</charset>
+            <charset>GBK</charset>
         </encoder>
     </appender>
     <root level="info">
