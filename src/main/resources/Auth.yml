@@ -1,4 +1,4 @@
 !com.beecloud.auth.Auth
 userName: admin
 passWord: admin
-baseUrl: "http://jira.oa.beecloud.com:50000/"
+baseUrl: http://jira.oa.beecloud.com:50000/

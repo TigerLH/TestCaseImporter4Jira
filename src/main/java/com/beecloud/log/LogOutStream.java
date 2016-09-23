@@ -10,6 +10,7 @@ import javax.swing.SwingUtilities;
 
 import com.beecloud.ui.BeeCloudWindow;
 
+
 /**
  * @description //日志重定向
  * @author hong.lin@beecloud.com

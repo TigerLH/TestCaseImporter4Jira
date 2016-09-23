@@ -13,13 +13,13 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -35,9 +35,6 @@ import com.beecloud.api.JiraUtil;
 import com.beecloud.excel.ExcelParser;
 import com.beecloud.log.LogOutStream;
 import com.beecloud.model.TestCase;
-
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
 
 /**
  * @description //TODO
@@ -63,36 +60,30 @@ public class BeeCloudWindow extends JFrame implements ActionListener,ItemListene
 		initWindow();
 		initPorjectComboBox();
 		JScrollPane js = new JScrollPane(JTextArea_logtout_1,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		JLabel label = new JLabel("选择项目：");
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
+			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(js)
+						.addComponent(js, GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(Button_SelectFile_1)
-								.addComponent(label))
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(comboBox, 0, 326, Short.MAX_VALUE)
-								.addComponent(JTextArea_filePath_1, GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE))))
+							.addComponent(Button_SelectFile_1)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(JTextArea_filePath_1, GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE))
+						.addComponent(comboBox, 0, 429, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-					.addGap(23)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(label)
-						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+			groupLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(Button_SelectFile_1)
-						.addComponent(JTextArea_filePath_1, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-					.addGap(18)
+						.addComponent(JTextArea_filePath_1, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addComponent(Button_SelectFile_1))
+					.addGap(9)
 					.addComponent(js, GroupLayout.PREFERRED_SIZE, 577, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
@@ -111,12 +102,13 @@ public class BeeCloudWindow extends JFrame implements ActionListener,ItemListene
 		Button_SelectFile_1 = new JButton("选择文件：");
 		Button_SelectFile_1.addActionListener(this);
 		comboBox = new JComboBox();
+		comboBox.setBorder(BorderFactory.createTitledBorder("项目选择"));
 		comboBox.addItemListener(this);
 		JTextArea_filePath_1 = new JTextArea();
 		JTextArea_filePath_1.setEditable(false);//文件选择框设置为不可编辑
 		JTextArea_logtout_1 = new JTextArea();
 		JTextArea_logtout_1.addKeyListener(this);
-		JTextArea_logtout_1.setFont(new Font("微软雅黑", Font.PLAIN, 13));
+		JTextArea_logtout_1.setFont(new Font("楷体", Font.PLAIN, 13));
 		JTextArea_logtout_1.setLineWrap(true);
 		JTextArea_logtout_1.setBorder(BorderFactory.createTitledBorder("日志输出"));
 		this.setTitle("云蜂用例导入工具");
@@ -127,9 +119,9 @@ public class BeeCloudWindow extends JFrame implements ActionListener,ItemListene
 		this.startLogforward();
 		try {
 			restClient = JiraRestClientFactory.CreateJiraRestClient();
-			logger.info("初始化完成");
+			logger.info("Initialization Complete");
 		} catch (Exception e) {
-			logger.info("初始化失败");
+			logger.info("Initialization Failed");
 		}
 	}
 	
@@ -144,7 +136,7 @@ public class BeeCloudWindow extends JFrame implements ActionListener,ItemListene
 		try {
 			list = jiraUtil.getAllProject();
 		} catch (Exception e) {
-			logger.error("项目列表获取失败");
+			logger.error("Failed to get the list of projects");
 		}
 		if(list.size()>0){
 			for(String item:list) {
@@ -176,7 +168,6 @@ public class BeeCloudWindow extends JFrame implements ActionListener,ItemListene
 							ExcelParser ep = new ExcelParser(path);
 							List<TestCase> list = ep.transRowsToCase(projectName);
 							JiraUtil jiraUtil = new JiraUtil(restClient);
-							System.out.println("size:"+list.size());
 							if(list.size()>0){
 								logger.info("TestCase importer is starting...");
 								logger.info("addIssue for project:"+projectName);
@@ -210,7 +201,7 @@ public class BeeCloudWindow extends JFrame implements ActionListener,ItemListene
 		if(e.getSource()==comboBox){
 			 if(e.getStateChange() == ItemEvent.SELECTED){
 				 projectName = comboBox.getSelectedItem().toString();
-				 logger.info("The Project you selected is:"+comboBox.getSelectedItem());
+				 logger.info("The Project you Selected is:"+comboBox.getSelectedItem());
 			 }			
 		}
 	}

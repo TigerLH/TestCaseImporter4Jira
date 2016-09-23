@@ -59,7 +59,7 @@ public class JiraUtil {
      */
     public void AddIssue(String projectName,TestCase testCase) throws Exception{
     	if(testCase.getReporter()==null||testCase.getCaseName()==null||
-    			("").equals(projectName)||testCase.getPriorityName()==null) {
+    			projectName==null||testCase.getPriorityName()==null) {
     		throw new Exception("必填字段不能为空");
     	}
     	String projectKey = this.getProjectKey(projectName);
