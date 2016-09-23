@@ -30,8 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.atlassian.jira.rest.client.api.JiraRestClient;
+import com.beecloud.api.JiraRestClientFactory;
 import com.beecloud.api.JiraUtil;
-import com.beecloud.auth.JiraRestClientFactory;
 import com.beecloud.excel.ExcelParser;
 import com.beecloud.log.LogOutStream;
 import com.beecloud.model.TestCase;

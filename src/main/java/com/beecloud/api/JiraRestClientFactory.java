@@ -1,9 +1,11 @@
-package com.beecloud.auth;
+package com.beecloud.api;
 
 import java.net.URI;
 
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
+import com.beecloud.auth.Auth;
+import com.beecloud.auth.AuthUtil;
 
 public class JiraRestClientFactory {
 	public static JiraRestClient CreateJiraRestClient() throws Exception{

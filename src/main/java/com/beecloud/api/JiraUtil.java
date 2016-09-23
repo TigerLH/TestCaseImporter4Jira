@@ -23,7 +23,6 @@ import com.atlassian.jira.rest.client.api.domain.input.IssueInputBuilder;
 import com.atlassian.util.concurrent.Promise;
 import com.beecloud.auth.Auth;
 import com.beecloud.auth.AuthUtil;
-import com.beecloud.auth.JiraRestClientFactory;
 import com.beecloud.constansts.CustomFieldsName;
 import com.beecloud.model.TestCase;
 import com.sun.jersey.api.client.Client;
