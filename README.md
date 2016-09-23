@@ -3,3 +3,4 @@
 ##原理:使用Jira Api导入
 ##使用到的三方库：jira-rest-java-client-core、com.esotericsoftware.yamlbeans、org.apache.poi、ch.qos.logback
 ##打包:mvn assembly:assembly
+##输出:可执行文件target/com.beecloud.jira-0.0.1-SNAPSHOT-jar-with-dependencies.jar
