@@ -21,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.beecloud.model.TestCase;
+import com.beecloud.model.TestStep;
+import com.google.gson.Gson;
 
 /**
  * @description //Excel操作类
@@ -35,7 +37,6 @@ public class ExcelParser {
     private Sheet sheet;
     private Row row;
     private Cell cell;
-    private static Map<String,String> ExceltoBeanFieldMap;
     public ExcelParser(String filePath) throws Exception {
     	this.filePath = filePath;
     	this.initWorkBook();
@@ -165,16 +166,22 @@ public class ExcelParser {
                     		testCase.setDescription(value);
                     		break;
                     	case "COMPONENT":
-                    		testCase.setComponent(value.split("@"));
+                    		testCase.setComponent(value.split("&"));
                     		break;
                     	case "LABELS":
-                    		testCase.setLabels(value.split("@"));
+                    		testCase.setLabels(value.split("&"));
                     		break;
                     	case "PRIROTY":
                     		testCase.setPriorityName(value);
                     		break;
                     	case "TESTSTEPS":
-                    		testCase.setSteps(value.split("@"));
+                    		List<TestStep> STEP_LIST = new ArrayList<TestStep>();
+                    		String[] steps = value.split("&");
+                    		Gson gson = new Gson(); 
+                    		for(String step:steps) {
+                    			STEP_LIST.add(gson.fromJson(step, TestStep.class));
+                    		}
+                    		testCase.setSteps(STEP_LIST);
                     		break;
                     	case "SPRINT":
                     		testCase.setSprint(value);

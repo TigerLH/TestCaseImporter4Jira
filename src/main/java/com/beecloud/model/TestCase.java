@@ -43,7 +43,7 @@ public class TestCase {
 	/**
 	 * 测试步骤
 	 */
-	private String[] steps;
+	private List<TestStep> steps;
 	/**
 	 * 备注信息
 	 */
@@ -96,10 +96,10 @@ public class TestCase {
 	public void setSprint(String sprint) {
 		this.sprint = sprint;
 	}
-	public String[] getSteps() {
+	public List<TestStep> getSteps() {
 		return steps;
 	}
-	public void setSteps(String[] steps) {
+	public void setSteps(List<TestStep> steps) {
 		this.steps = steps;
 	}
 	public String getCommit() {
@@ -110,10 +110,11 @@ public class TestCase {
 	}
 	@Override
 	public String toString() {
-		return "TestCase [caseName=" + caseName + ", reporter=" + reporter + ", description=" + description
-				+ ", priorityName=" + priorityName + ", component=" + Arrays.toString(component) + ", labels="
-				+ Arrays.toString(labels) + ", assignee=" + assignee + ", sprint=" + sprint + ", steps="
-				+ Arrays.toString(steps) + ", commit=" + commit + "]";
+		return "TestCase [caseName=" + caseName + ", reporter=" + reporter
+				+ ", description=" + description + ", priorityName="
+				+ priorityName + ", component=" + Arrays.toString(component)
+				+ ", labels=" + Arrays.toString(labels) + ", assignee="
+				+ assignee + ", sprint=" + sprint + ", steps=" + steps
+				+ ", commit=" + commit + "]";
 	}
-	
 }

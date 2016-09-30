@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
@@ -24,14 +28,19 @@ import com.atlassian.util.concurrent.Promise;
 import com.beecloud.auth.Auth;
 import com.beecloud.auth.AuthUtil;
 import com.beecloud.constansts.CustomFieldsName;
+import com.beecloud.constansts.IssueTypes;
+import com.beecloud.excel.ExcelParser;
 import com.beecloud.model.TestCase;
+import com.beecloud.model.TestStep;
+import com.google.gson.Gson;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 public class JiraUtil {
-	private JiraRestClient restClient = null;
+	private Logger logger = LoggerFactory.getLogger(getClass());
+	private  JiraRestClient restClient = null;
 	public JiraUtil(JiraRestClient restClient){
 		this.restClient = restClient;
 	}
@@ -135,14 +144,14 @@ public class JiraUtil {
 		Iterator<IssueType> types = project.getIssueTypes().iterator();
 		while(types.hasNext()){
 			IssueType type = types.next();
-			if("测试".equals(type.getName())||"test".equals(type.getName())){
+			if(IssueTypes.TESTCASE.getCode().equals(type.getName())){
 				return type.getId();
 			}
 		}
 		return null;
 	}
 	
-	private List<String> getComponentsByProjectName(String name)throws Exception{
+	public List<String> getComponentsByProjectName(String name)throws Exception{
 		List<String> list  = new ArrayList<String>();
 		BasicProject basicProject = getBasicProjectByName(name);
 		Project project = restClient.getProjectClient()
@@ -196,44 +205,69 @@ public class JiraUtil {
 	     * @param steps
 	     * @throws Exception 
 	     */
-	    private  void addSteps(Issue issue,String[] steps) throws Exception{
+	    private  void addSteps(Issue issue,List<TestStep> steps) throws Exception{
 	    	Auth auth = AuthUtil.getAuth();
-	    	String path = auth.getBaseUrl()+"rest/zephyr/latest/teststep/"+issue.getId();
+	    	String path = auth.getBaseUrl()+"/rest/synapse/1.0/testStep/addTestStep";
 	    	Client client = Client.create();	
 			client.addFilter(new HTTPBasicAuthFilter(auth.getUserName(), auth.getPassWord()));
 			WebResource webResource = client.resource(path);
-			for(String step:steps){
-				webResource.header("AO-7DEABF", "auppakjeIXnN80RqVC7qoG52s2tMo3VLWD7cI/IRGGe44Jj19DmCfFA0sgIb+kAfubHWeYoD4cUIRYaZ7VAvVQ==")
-						.type("application/json").post(ClientResponse.class, step);
+			long tcId = issue.getId();
+			Gson gson = new Gson();
+			for(TestStep step:steps){
+				step.setTcId(tcId);
+				logger.info(gson.toJson(step));
+				webResource.type("application/json").post(ClientResponse.class, gson.toJson(step));
 			}
 	    }
 	    
 	    public static void main(String[] args) {
-	    	String[] steps = new String[3];
-	    	steps[0] = "{\"step\":\"1\",\"data\":\"1\",\"result\":\"1\"}";
-	    	steps[1] = "{\"step\":\"2\",\"data\":\"2\",\"result\":\"2\"}";
-	    	steps[2] = "{\"step\":\"3\",\"data\":\"3\",\"result\":\"3\"}";
-	    	TestCase testCase = new TestCase();
-	    	testCase.setAssignee("admin");
-	    	testCase.setCaseName("AutoAdd");
-	    	testCase.setCommit("commit test");
-	    	//testCase.setComponent(new String[]{"前端"});
-	    	testCase.setDescription("自动添加");
-	    	testCase.setLabels(new String[]{"label1","label2"});
-	    	testCase.setPriorityName("High");
-	    	testCase.setReporter("admin");
-	    	testCase.setSteps(steps);
-	    	JiraRestClient jiraClient = null;
-				 try {
-					jiraClient = JiraRestClientFactory.CreateJiraRestClient();
-				} catch (Exception e1) {
-					System.out.println(e1.getLocalizedMessage());
-				}
+	    	JiraRestClient restClient = null;
 			try {
-				new JiraUtil(jiraClient).AddIssue("abc",testCase);
+				restClient = JiraRestClientFactory.CreateJiraRestClient();
+			} catch (Exception e1) {
+				// TODO 自动生成的 catch 块
+				e1.printStackTrace();
+			}
+			JiraUtil ju = new JiraUtil(restClient);
+			ExcelParser ep = null;
+			try {
+				ep = new ExcelParser("TestCase.xls");
+				List<TestCase> list = ep.transRowsToCase("Test Case Library");
+			
+				for(TestCase testCase:list) {
+					ju.AddIssue("Test Case Library",testCase);
+					
+				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
+				// TODO 自动生成的 catch 块
 				e.printStackTrace();
 			}
+			
+//	    	String[] steps = new String[3];
+//	    	steps[0] = "{\"step\":\"1\",\"data\":\"1\",\"result\":\"1\"}";
+//	    	steps[1] = "{\"step\":\"2\",\"data\":\"2\",\"result\":\"2\"}";
+//	    	steps[2] = "{\"step\":\"3\",\"data\":\"3\",\"result\":\"3\"}";
+//	    	TestCase testCase = new TestCase();
+//	    	testCase.setAssignee("admin");
+//	    	testCase.setCaseName("AutoAdd");
+//	    	testCase.setCommit("commit test");
+//	    	//testCase.setComponent(new String[]{"前端"});
+//	    	testCase.setDescription("自动添加");
+//	    	testCase.setLabels(new String[]{"label1","label2"});
+//	    	testCase.setPriorityName("High");
+//	    	testCase.setReporter("admin");
+//	    	testCase.setSteps(steps);
+//	    	JiraRestClient jiraClient = null;
+//				 try {
+//					jiraClient = JiraRestClientFactory.CreateJiraRestClient();
+//				} catch (Exception e1) {
+//					System.out.println(e1.getLocalizedMessage());
+//				}
+//			try {
+//				new JiraUtil(jiraClient).AddIssue("abc",testCase);
+//			} catch (Exception e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 }
