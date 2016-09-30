@@ -4,8 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
+
+
+
+
+
+import javax.ws.rs.core.MediaType;
+
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +43,7 @@ import com.google.gson.Gson;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 public class JiraUtil {
@@ -222,10 +230,10 @@ public class JiraUtil {
 	 */
 	private void addSteps(Issue issue, List<TestStep> steps) throws Exception {
 		Auth auth = AuthUtil.getAuth();
-		System.out.println(auth.toString());
-		String path = auth.getBaseUrl()
-				+ "rest/synapse/1.0/testStep/addTestStep";
-		Client client = Client.create();
+		DefaultClientConfig defaultClientConfig = new DefaultClientConfig();
+		defaultClientConfig.getClasses().add(JacksonJsonProvider.class);
+		Client client = Client.create(defaultClientConfig);
+		String path = auth.getBaseUrl()+ "rest/synapse/1.0/testStep/addTestStep";
 		client.addFilter(new HTTPBasicAuthFilter(auth.getUserName(), auth
 				.getPassWord()));
 		WebResource webResource = client.resource(path);
@@ -233,9 +241,8 @@ public class JiraUtil {
 		Gson gson = new Gson();
 		for (TestStep step : steps) {
 			step.setTcId(tcId);
-			logger.info(gson.toJson(step));
-			webResource.type("application/json").post(ClientResponse.class,
-					gson.toJson(step));
+			webResource.type(MediaType.APPLICATION_JSON_TYPE).post(ClientResponse.class,
+					gson.toJson(step).toString());
 		}
 	}
 
