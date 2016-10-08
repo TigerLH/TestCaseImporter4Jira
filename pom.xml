@@ -65,6 +65,12 @@
 		   <artifactId>gson</artifactId>
 	   	   <version>2.7</version>
 	   </dependency>
+	   <!-- https://mvnrepository.com/artifact/com.sun.jersey/jersey-client -->
+<!-- 	<dependency> -->
+<!-- 	    <groupId>com.sun.jersey</groupId> -->
+<!-- 	    <artifactId>jersey-json</artifactId> -->
+<!-- 	    <version>1.19.2</version> -->
+<!-- 	</dependency> -->
 	</dependencies>
 	
 	<build>

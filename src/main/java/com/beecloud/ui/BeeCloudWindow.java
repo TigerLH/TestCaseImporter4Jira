@@ -116,7 +116,7 @@ public class BeeCloudWindow extends JFrame implements ActionListener,ItemListene
 		this.setResizable(false);//设置窗体不能变化大小
 		this.setLocationRelativeTo(null);//设置窗体居中显示
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//点击窗口右上角的关闭按钮关闭窗口,退出程序
-		this.startLogforward();
+		this.startLogforward();	//日志转向开关
 		try {
 			restClient = JiraRestClientFactory.CreateJiraRestClient();
 			logger.info("Initialization Complete");

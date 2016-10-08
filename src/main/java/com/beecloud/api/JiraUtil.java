@@ -156,6 +156,7 @@ public class JiraUtil {
 	 * @throws Exception
 	 */
 	private Long getTestTypeByProjectName(String name) throws Exception {
+		Long id = null;
 		BasicProject basicProject = getBasicProjectByName(name);
 		Project project = restClient.getProjectClient()
 				.getProject(basicProject.getKey()).get();
@@ -163,10 +164,13 @@ public class JiraUtil {
 		while (types.hasNext()) {
 			IssueType type = types.next();
 			if (IssueTypes.TESTCASE.getCode().equals(type.getName())) {
-				return type.getId();
+				id = type.getId();
 			}
 		}
-		return null;
+		if(id==null) {
+			throw new Exception("There is  no IssueType:"+name);
+		}
+		return id;
 	}
 
 	public List<String> getComponentsByProjectName(String name)
@@ -238,11 +242,10 @@ public class JiraUtil {
 				.getPassWord()));
 		WebResource webResource = client.resource(path);
 		long tcId = issue.getId();
-		Gson gson = new Gson();
 		for (TestStep step : steps) {
 			step.setTcId(tcId);
-			webResource.type(MediaType.APPLICATION_JSON_TYPE).post(ClientResponse.class,
-					gson.toJson(step).toString());
+			webResource.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,
+					step);
 		}
 	}
 
@@ -262,7 +265,6 @@ public class JiraUtil {
 
 			for (TestCase testCase : list) {
 				ju.AddIssue("Test Case Library", testCase);
-
 			}
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
